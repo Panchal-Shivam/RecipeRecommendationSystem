@@ -17,7 +17,7 @@ selected_item_index = None  # Initialize to None
 # Button to trigger recommendation
 if st.button("Get Recommendations"):
     # Set the dataset path
-    dataset_path = 'C:/CapstoneProject/Datasets/IndianRecipeData.xlsx'  # Replace with your actual data path
+    dataset_path = "./Datasets/IndianRecipeData.xlsx"  # Replace with your actual data path
 
     # Call the recommendation system function with user inputs
     sequence_recommendations, priority_recipes = recommendation_system(user_ingredients, selected_course, max_cooking_time,
