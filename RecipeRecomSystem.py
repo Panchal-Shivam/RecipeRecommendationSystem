@@ -52,15 +52,12 @@ def recommend_recipes(user_ingredients, recipe_data, vectorizer):
 def generate_sequence_of_recommendations(priority_recipes, other_recipes):
     """Generates a sequence of recommended recipes."""
     sequence_recommendations = []
-    item_number = 1
 
-    for recipe, _, _, _ in priority_recipes:
-        sequence_recommendations.append(f"{item_number}. {recipe}")
-        item_number += 1
+    for item_number, recipe_info in enumerate(priority_recipes, 1):
+        sequence_recommendations.append(f"{item_number}. {recipe_info[0]}")
 
-    for recipe, _, _, _ in other_recipes:
-        sequence_recommendations.append(f"{item_number}. {recipe}")
-        item_number += 1
+    for item_number, recipe_info in enumerate(other_recipes, len(priority_recipes) + 1):
+        sequence_recommendations.append(f"{item_number}. {recipe_info[0]}")
 
     return sequence_recommendations
 
@@ -78,13 +75,3 @@ def recommendation_system(user_input, course_input, max_time_input, dataset_path
     sequence_recommendations = generate_sequence_of_recommendations(priority_recipes, other_recipes)
 
     return sequence_recommendations, priority_recipes
-
-# This part is for testing the logic file
-# sample_user_input = "ragi"
-# sample_course_input = "satvic"
-# sample_max_time_input = 30
-# dataset_path = 'Datasets/IndianRecipeData.xlsx'
-# sequence_recommendations, priority_recipes = recommendation_system(sample_user_input, sample_course_input, sample_max_time_input, dataset_path)
-# print("Recommended Recipes:")
-# for item in sequence_recommendations:
-#     print(item)
