@@ -20,37 +20,34 @@ def calculate_similarity(user_ingredients, recipe_ingredients, vectorizer):
     similarity_score = cosine_similarity(user_vector, recipe_vector)[0][0]
     return similarity_score
 
-def recommend_recipes(user_ingredients, recipe_data, vectorizer, course_input=None, max_time_input=None):
-  """Recommends recipes based on user input, optionally filtering by course and cooking time."""
-  priority_recipes = []
-  other_recipes = []
+def recommend_recipes(user_ingredients, recipe_data, vectorizer):
+    """Recommends recipes based on user input."""
+    priority_recipes = []
+    other_recipes = []
 
-  user_ingredients_list = user_ingredients.split(", ")
+    user_ingredients_list = user_ingredients.split(", ")
 
-  for index, row in recipe_data.dropna(subset=['Ingredients']).iterrows():  # Drop rows with missing ingredients
-    recipe_ingredients = preprocess_text(row['Ingredients'])
-    similarity_score_name = calculate_similarity(user_ingredients, preprocess_text(row['RecipeName']), vectorizer)
-    similarity_score_translated = calculate_similarity(user_ingredients, preprocess_text(row['TranslatedRecipeName']), vectorizer)
-    similarity_score_ingredients = calculate_similarity(user_ingredients, recipe_ingredients, vectorizer)
+    for index, row in recipe_data.iterrows():
+        recipe_ingredients = preprocess_text(row['Ingredients'])
+        similarity_score_name = calculate_similarity(user_ingredients, preprocess_text(row['RecipeName']), vectorizer)
+        similarity_score_translated = calculate_similarity(user_ingredients, preprocess_text(row['TranslatedRecipeName']), vectorizer)
+        similarity_score_ingredients = calculate_similarity(user_ingredients, recipe_ingredients, vectorizer)
 
-    # Filter based on course and cooking time (if provided)
-    if (course_input is None or row['Course'] == course_input) and (max_time_input is None or row['Max Cooking Time (mins)'] <= max_time_input):
-      if all(ingredient.strip() in recipe_ingredients.split(", ") for ingredient in user_ingredients_list):
-        priority_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], 1.0))
-      elif similarity_score_name > 0.5:
-        priority_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], similarity_score_name))
-      elif similarity_score_translated > 0.5:
-        priority_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], similarity_score_translated))
-      elif similarity_score_ingredients > 0.5:
-        priority_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], similarity_score_ingredients))
-      else:
-        other_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], 0))
+        if all(ingredient.strip() in recipe_ingredients.split(", ") for ingredient in user_ingredients_list):
+            priority_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], 1.0))
+        elif similarity_score_name > 0.5:
+            priority_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], similarity_score_name))
+        elif similarity_score_translated > 0.5:
+            priority_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], similarity_score_translated))
+        elif similarity_score_ingredients > 0.5:
+            priority_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], similarity_score_ingredients))
+        else:
+            other_recipes.append((row['RecipeName'], row['Ingredients'], row['Instructions'], 0))
 
-  priority_recipes.sort(key=lambda x: x[3], reverse=True)
-  other_recipes.sort(key=lambda x: x[3], reverse=True)
+    priority_recipes.sort(key=lambda x: x[3], reverse=True)
+    other_recipes.sort(key=lambda x: x[3], reverse=True)
 
-  return priority_recipes, other_recipes
-
+    return priority_recipes, other_recipes
 
 def generate_sequence_of_recommendations(priority_recipes, other_recipes):
     """Generates a sequence of recommended recipes."""
