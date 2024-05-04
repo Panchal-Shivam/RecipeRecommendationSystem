@@ -13,7 +13,7 @@ max_cooking_time = st.number_input("Max Cooking Time (in minutes)", min_value=0)
 # Button to trigger recommendation
 if st.button("Get Recommendations"):
     # Set the dataset path
-    dataset_path = 'C:/CapstoneProject/Datasets/IndianRecipeData.xlsx'
+    dataset_path = './Datasets/IndianRecipeData.xlsx'
 
     # Call the recommendation system function with user inputs
     sequence_recommendations, priority_recipes = recommendation_system(user_ingredients, selected_course, max_cooking_time,
