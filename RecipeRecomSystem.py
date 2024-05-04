@@ -52,12 +52,15 @@ def recommend_recipes(user_ingredients, recipe_data, vectorizer):
 def generate_sequence_of_recommendations(priority_recipes, other_recipes):
     """Generates a sequence of recommended recipes."""
     sequence_recommendations = []
+    item_number = 1
 
-    for item_number, recipe_info in enumerate(priority_recipes, 1):
-        sequence_recommendations.append(f"{item_number}. {recipe_info[0]}")
+    for recipe, _, _, _ in priority_recipes:
+        sequence_recommendations.append(f"{item_number}. {recipe}")
+        item_number += 1
 
-    for item_number, recipe_info in enumerate(other_recipes, len(priority_recipes) + 1):
-        sequence_recommendations.append(f"{item_number}. {recipe_info[0]}")
+    for recipe, _, _, _ in other_recipes:
+        sequence_recommendations.append(f"{item_number}. {recipe}")
+        item_number += 1
 
     return sequence_recommendations
 
