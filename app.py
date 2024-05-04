@@ -13,7 +13,7 @@ max_cooking_time = st.number_input("Max Cooking Time (in minutes)", min_value=0)
 # Button to trigger recommendation
 if st.button("Get Recommendations"):
     # Set the dataset path
-    dataset_path = './Datasets/IndianRecipeData.xlsx'
+    dataset_path = 'Datasets/IndianRecipeData.xls'
 
     # Call the recommendation system function with user inputs
     sequence_recommendations, priority_recipes = recommendation_system(user_ingredients, selected_course, max_cooking_time,
@@ -27,15 +27,17 @@ if st.button("Get Recommendations"):
 
         # Input field for user to enter the sequence number of the item they like
         selected_item_index = st.number_input("Enter the sequence number of the item you like", min_value=1,
-                                              max_value=len(priority_recipes))
+                                              max_value=len(priority_recipes), value=1)
 
-        if selected_item_index and selected_item_index <= len(priority_recipes):
-            selected_recipe = priority_recipes[selected_item_index - 1]
+        # Display detailed recipe for the selected item
+        if st.button("Get Detailed Recipe"):
+            selected_item_index -= 1  # Adjust for 0-based index
+            selected_recipe = priority_recipes[selected_item_index]
             st.write(f"Detailed Recipe for {selected_recipe[0]}:")
             st.write(f"Ingredients: {selected_recipe[1]}")
             st.write(f"Instructions: {selected_recipe[2]}")
-        else:
-            st.warning("Please select a valid item.")
+    else:
+        st.write("No recommendations found.")
 
 # Footer
 st.markdown("---")
