@@ -66,7 +66,11 @@ def generate_sequence_of_recommendations(priority_recipes, other_recipes):
 
 def recommendation_system(user_input, course_input, max_time_input, dataset_path):
     """Runs the recommendation system."""
-    indian_recipe_data = pd.excel_file(dataset_path)
+    try:
+        indian_recipe_data = pd.read_excel(dataset_path)
+    except Exception as e:
+        print(f"Error reading Excel file: {e}")
+        return [], []
 
     user_input_processed = preprocess_text(user_input)
     indian_recipe_data['Ingredients'] = indian_recipe_data['Ingredients'].apply(preprocess_text)
