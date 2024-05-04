@@ -13,11 +13,11 @@ max_cooking_time = st.number_input("Max Cooking Time (in minutes)", min_value=0)
 # Button to trigger recommendation
 if st.button("Get Recommendations"):
     # Set the dataset path
-    dataset_path = 'Datasets/IndianRecipeData.xlsx'
+    dataset_path = 'Datasets/IndianRecipeData.xlsx'  # Adjust the path as per your file structure
 
     # Call the recommendation system function with user inputs
-    sequence_recommendations, priority_recipes = recommendation_system(user_ingredients, selected_course, max_cooking_time,
-                                                                        dataset_path)
+    sequence_recommendations, _ = recommendation_system(user_ingredients, selected_course, max_cooking_time,
+                                                        dataset_path)
 
     # Display the recommendations in a scrollable box
     if sequence_recommendations:
@@ -27,18 +27,12 @@ if st.button("Get Recommendations"):
 
         # Input field for user to enter the sequence number of the item they like
         selected_item_index = st.number_input("Enter the sequence number of the item you like", min_value=1,
-                                              max_value=len(priority_recipes), value=1)
+                                              max_value=len(sequence_recommendations))
 
         # Display detailed recipe for the selected item
         if st.button("Get Detailed Recipe"):
             selected_item_index -= 1  # Adjust for 0-based index
-            selected_recipe = priority_recipes[selected_item_index]
-            st.write(f"Detailed Recipe for {selected_recipe[0]}:")
-            st.write(f"Ingredients: {selected_recipe[1]}")
-            st.write(f"Instructions: {selected_recipe[2]}")
+            selected_recipe = sequence_recommendations[selected_item_index]
+            st.write(f"Detailed Recipe for {selected_recipe}:")  # Modify this to display the actual details
     else:
         st.write("No recommendations found.")
-
-# Footer
-st.markdown("---")
-st.markdown("Created by Your Name")
